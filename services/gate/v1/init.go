@@ -11,7 +11,7 @@ import (
 	"github.com/qinhan-shu/consul/module"
 	"github.com/qinhan-shu/consul/services/pprof/v1"
 	"github.com/qinhan-shu/consul/services/registry/registrar/v1"
-	"github.com/qinhan-shu/consul/utils/parse"
+	"github.com/qinhan-shu/go-utils/parse"
 )
 
 // Gate : 网关
