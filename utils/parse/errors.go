@@ -11,5 +11,5 @@ type Err struct {
 }
 
 func (e Err) Error() string {
-	return fmt.Sprintf("failed to parse [%v] to %s", e.origin, e.method)
+	return fmt.Sprintf("failed to parse [%v1] to %s", e.origin, e.method)
 }

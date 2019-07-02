@@ -28,7 +28,7 @@ func IntWithError(in interface{}) (int64, error) {
 		}
 		left, err := strconv.ParseInt(inp, 10, 64)
 		if err != nil {
-			logger.Sugar.Errorf("parse to int error([]uint8) : %v", err)
+			logger.Sugar.Errorf("parse to int error([]uint8) : %v1", err)
 			return 0, err
 		}
 		ret = left
@@ -39,7 +39,7 @@ func IntWithError(in interface{}) (int64, error) {
 		}
 		left, err := strconv.ParseInt(inp, 10, 64)
 		if err != nil {
-			logger.Sugar.Errorf("parse to int error(string) : %v", err)
+			logger.Sugar.Errorf("parse to int error(string) : %v1", err)
 			return 0, err
 		}
 		ret = left

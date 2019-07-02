@@ -3,27 +3,45 @@ package gate
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"sync"
 
-	"github.com/gin-gonic/gin"
+	"github.com/rs/cors"
 
 	"github.com/qinhan-shu/consul/module"
+	"github.com/qinhan-shu/consul/services/pprof/v1"
+	"github.com/qinhan-shu/consul/services/registry/registrar/v1"
 	"github.com/qinhan-shu/consul/utils/parse"
 )
 
 // Gate : 网关
 type Gate struct {
-	port      int
-	engine    *gin.Engine
 	routesMap sync.Map
+	mux       *http.ServeMux
+	server    http.Server
 }
 
 // NewGate : 构造函数
-func NewGate() *Gate {
-	return &Gate{
-		port:   8000,
-		engine: gin.Default(),
+func NewGate(port int) *Gate {
+	g := new(Gate)
+	g.mux = http.NewServeMux()
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedHeaders:   []string{"*"},
+		ExposedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+
+	g.server = http.Server{
+		Addr:    fmt.Sprintf(":%d", port),
+		Handler: c.Handler(g.mux),
 	}
+
+	// 增加pprof
+	pprof.AddPprof(g)
+
+	return g
 }
 
 // RegisterRoute : 注册服务
@@ -39,26 +57,19 @@ func (g *Gate) Start() {
 	g.routesMap.Range(func(k, v interface{}) bool {
 		path, err := parse.StringWithError(k)
 		if err != nil {
-			log.Fatalf("illegal http path[%v], not string, parse error [%v]", k, err)
+			log.Fatalf("illegal http path[%v1], not string, parse error [%v1]", k, err)
 		}
 		route := v.(module.Route)
-
-		switch route.Method {
-		case "GET":
-			{
-				g.engine.GET(path, route.Handler)
-			}
-		case "POST":
-			{
-				g.engine.POST(path, route.Handler)
-			}
-		default:
-			{
-				log.Fatalf("illegal http method[%s]", route.Method)
-			}
-		}
+		g.mux.HandleFunc(path, route.Handler)
 		return true
 	})
 
-	g.engine.Run(fmt.Sprintf(":%d", g.port))
+	consulRegistrar := registrar.NewRegistrar(8080, 9527, "web")
+	consulRegistrar.Register()
+
+	fmt.Println(g.routesMap)
+
+	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
+		log.Fatalf("gate service ListenAndServe error: %v", err)
+	}
 }

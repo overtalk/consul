@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	webGate := gate.NewGate()
+	webGate := gate.NewGate(8000)
 	auth.Register(webGate)
 	webGate.Start()
 }

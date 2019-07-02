@@ -1,14 +1,14 @@
 package module
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 // Route : 路由配置
 type Route struct {
 	Method  string
 	Path    string
-	Handler gin.HandlerFunc
+	Handler http.HandlerFunc
 }
 
 // Gate : 网关接口

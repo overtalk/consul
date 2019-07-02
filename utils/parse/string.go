@@ -27,7 +27,7 @@ func StringWithError(in interface{}) (string, error) {
 	case nil:
 		return "", Err{method: "String", origin: in}
 	default:
-		logger.Sugar.Errorf("parse to string error(unknown) : %v", in)
+		logger.Sugar.Errorf("parse to string error(unknown) : %v1", in)
 		return "", Err{method: "String", origin: in}
 	}
 
