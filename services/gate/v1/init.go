@@ -68,13 +68,7 @@ func (g *Gate) Start() {
 	consulRegistrar := registrar.NewRegistrar(8080, 9527, "web")
 	consulRegistrar.Register()
 
-	fmt.Println(g.routesMap)
-
-	//time.Sleep(5 * time.Second)
-	//if err := consulRegistrar.DeRegister(); err != nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Println("取消注册完成")
+	log.Printf("Starting web server on %s\n", g.server.Addr)
 	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatalf("gate service ListenAndServe error: %v", err)
 	}

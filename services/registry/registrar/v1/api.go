@@ -12,9 +12,9 @@ func (c *Registrar) Register() error {
 	c.ServeMux.HandleFunc("/check", c.updateStatusHandleFunc)
 	go func() {
 		if c.checkServer.Addr != "" {
-			log.Printf("Start registry service on %s\n", c.checkServer.Addr)
+			log.Printf("Starting %s consul check server on %s\n", c.serverType, c.checkServer.Addr)
 			if err := c.checkServer.ListenAndServe(); err != nil {
-				log.Fatalf("start registry service error: %v", err)
+				log.Fatalf("Starting %s registry Starting error: %v", c.serverType, err)
 			}
 		}
 	}()

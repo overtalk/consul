@@ -15,3 +15,9 @@ type Route struct {
 type Gate interface {
 	RegisterRoute(r Route)
 }
+
+// InternalGate : 内部网关，主要用于 consul & pprof
+type InternalGate interface {
+	AddConsulCheck()
+	AddPprof()
+}
