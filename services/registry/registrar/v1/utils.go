@@ -1,12 +1,13 @@
 package registrar
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 )
 
-func getConsulID(serverType string) string {
-	return ""
+func getConsulID(pod podInfo) string {
+	return fmt.Sprintf("%s_%s", pod.Namespace, pod.Name)
 }
 
 func getPodInfo() podInfo {

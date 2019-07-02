@@ -8,10 +8,11 @@ import (
 
 	"github.com/rs/cors"
 
+	"github.com/qinhan-shu/go-utils/parse"
+
 	"github.com/qinhan-shu/consul/module"
 	"github.com/qinhan-shu/consul/services/pprof/v1"
 	"github.com/qinhan-shu/consul/services/registry/registrar/v1"
-	"github.com/qinhan-shu/go-utils/parse"
 )
 
 // Gate : 网关
@@ -69,6 +70,11 @@ func (g *Gate) Start() {
 
 	fmt.Println(g.routesMap)
 
+	//time.Sleep(5 * time.Second)
+	//if err := consulRegistrar.DeRegister(); err != nil {
+	//	fmt.Println(err)
+	//}
+	//fmt.Println("取消注册完成")
 	if err := g.server.ListenAndServe(); err != http.ErrServerClosed {
 		log.Fatalf("gate service ListenAndServe error: %v", err)
 	}

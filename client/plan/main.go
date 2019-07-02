@@ -17,9 +17,9 @@ func main() {
 
 	params = make(map[string]interface{})
 	params["type"] = "service"
-	params["service"] = "serverNode"
+	params["service"] = "web"
 	params["passingonly"] = false
-	params["tag"] = "serverNode"
+	//params["tag"] = "serverNode"
 	plan, err = watch.Parse(params)
 	if err != nil {
 		panic(err)
