@@ -58,7 +58,7 @@ func (g *Gate) Start() {
 	g.routesMap.Range(func(k, v interface{}) bool {
 		path, err := parse.StringWithError(k)
 		if err != nil {
-			log.Fatalf("illegal http path[%v1], not string, parse error [%v1]", k, err)
+			log.Fatalf("illegal http path[%v], not string, parse error [%v]", k, err)
 		}
 		route := v.(module.Route)
 		g.mux.HandleFunc(path, route.Handler)

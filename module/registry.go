@@ -10,20 +10,26 @@ const (
 	WebServerType ServerType = "web"
 )
 
-type consulWatchServers struct {
-	serverType ServerType
-	servers    []string
+// ConsulWatchConf : 服务配置
+type ConsulWatchConf struct {
+	ServerType ServerType
+	Tag        string
+}
+
+// ConsulWatchServers ： 可用服务
+type ConsulWatchServers struct {
+	ServerType ServerType
+	Servers    []string
 }
 
 // Registrar : consul 注册器
 type Registrar interface {
 	//Wait()             // 等待特定的服务上线
-	Register() error // 向consul注册服务
-	//DeRegister() error // 向consul取消注册
+	Register() error   // 向consul注册服务
+	DeRegister() error // 向consul取消注册
 }
 
 // Detector ： consul 检测器
 type Detector interface {
-	Watch(serverType ServerType) <-chan consulWatchServers // 服务watch
-	GetAllServers(serverType ServerType) []string          // 服务发现
+	Watch() <-chan ConsulWatchServers // 服务watch
 }

@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 
+	"github.com/qinhan-shu/consul/module"
+	"github.com/qinhan-shu/consul/services/registry/detector/v1"
+
 	consulApi "github.com/hashicorp/consul/api"
 	"github.com/hashicorp/consul/api/watch"
 )
 
 // 使用consul源码中的watch包监听服务变化
-func main() {
+func main1() {
 	var (
 		err    error
 		params map[string]interface{}
@@ -25,11 +28,18 @@ func main() {
 		panic(err)
 	}
 	plan.Handler = func(index uint64, result interface{}) {
+		fmt.Println("应该是服务发生了变化")
+		if result == nil {
+			return
+		}
+
 		if entries, ok := result.([]*consulApi.ServiceEntry); ok {
-			for k, v := range entries {
-				fmt.Println(k)
-				fmt.Println("health checks = ", v.Checks.AggregatedStatus())
-				fmt.Println("id = ", v.Service.ID)
+			for _, entry := range entries {
+				if entry.Checks.AggregatedStatus() != consulApi.HealthPassing {
+					fmt.Printf("ID = %s, address = %s 下线了\n", entry.Service.ID, entry.Service.Address)
+					continue
+				}
+				fmt.Printf("ID = %s, address = %s 已经上线\n", entry.Service.ID, entry.Service.Address)
 			}
 		}
 	}
@@ -40,25 +50,10 @@ func main() {
 
 }
 
-//func register() {
-//	var (
-//		err    error
-//		client *consulApi.Client
-//	)
-//	client, err = consulApi.NewClient(&consulApi.Config{Address: "127.0.0.1:8500"})
-//	if err != nil {
-//		panic(err)
-//	}
-//	err = client.Agent().ServiceRegister(&consulApi.AgentServiceRegistration{
-//		ID:   "",
-//		Name: "test",
-//		Tags: []string{"SERVER"},
-//		Port: 9527,
-//		Check: &consulApi.AgentServiceCheck{
-//			HTTP: "",
-//		},
-//	})
-//	if err != nil {
-//		panic(err)
-//	}
-//}
+// 使用consul源码中的watch包监听服务变化
+func main() {
+	m := detector.NewDetector(module.ConsulWatchConf{module.WebServerType, ""})
+	for v := range m.Watch() {
+		fmt.Println(v)
+	}
+}
